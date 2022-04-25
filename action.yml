@@ -1,0 +1,45 @@
+name: "Deployment approval notification"
+description: "Notify over slack for automatic approval of PROD deployment"
+inputs:
+  users:
+    description: List of user we need to notify
+    required: true
+    default: "<@URT1Q6VRU>, <@U01CEUBHZB7>"
+  webhook:
+    description: Slack webhook to use to post the message
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Post to Slack
+      uses: slackapi/slack-github-action@v1.16.0
+      with:
+        payload: |
+          {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "${{ inputs.users }} Please approve the following deployment"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Repo:*\n<https://github.com/${{ github.repository }}|${{ github.repository }} >"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Workflow Run:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} | Workflow >"
+                  }
+                ]
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ inputs.webhook }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
