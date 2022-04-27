@@ -5,6 +5,10 @@ inputs:
     description: List of user we need to notify
     required: true
     default: "<@URT1Q6VRU>, <@U01CEUBHZB7>"
+  additional-users:
+    description: List of user we need to notify
+    required: true
+    default: ""
   webhook:
     description: Slack webhook to use to post the message
     required: true
@@ -22,7 +26,7 @@ runs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "${{ inputs.users }} Please approve the following deployment"
+                  "text": "${{ inputs.users }} ${{ inputs.additional-users }} Please approve the following deployment"
                 }
               },
               {
